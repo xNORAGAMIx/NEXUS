@@ -71,7 +71,7 @@ export const deleteCategory = async (req, res) => {
     try {
         const [rows] = await db.query('DELETE FROM CATEGORIES WHERE category_id = ?', [id]);
 
-        if(rows.length === 0){
+        if(rows.affectedRows === 0){
             return  res.status(404).json({
                 valid: false,
                 message: "Category not found"
@@ -92,7 +92,6 @@ export const deleteCategory = async (req, res) => {
         })
     }
 }
-
 
 export const updateCategory = async (req, res) => {
 

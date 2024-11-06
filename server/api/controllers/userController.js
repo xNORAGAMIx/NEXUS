@@ -85,7 +85,7 @@ export const deleteUser = async (req,res) => {
     try {
         const [user] = await db.query('DELETE FROM USERS WHERE user_id = ?', [id]);
 
-        if(user.length === 0){
+        if(user.affectedRows === 0){
             return res.status(404).json({
                 valid: false,
                 message: 'No user found'
