@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import userRoutes from './routes/userRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
 import productRoutes from './routes/productRoutes.js';
+import cartRoutes from './routes/cartRoutes.js';
 
 dotenv.config();
 
@@ -29,6 +30,9 @@ app.use('/api/v1/category', categoryRoutes);
 
 //product routes
 app.use('/api/v1/products', productRoutes);
+
+//cart routes
+app.use('/api/v1/cart', cartRoutes)
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
