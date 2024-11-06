@@ -2,6 +2,7 @@ import express from 'express';
 import { deleteUser, getAllUsers, getUserById, registerUser, updateUser } from '../controllers/userController.js';
 import { loginUser, logoutUser } from '../controllers/authController.js';
 import { authenticateJWT } from '../middleware/verifyToken.js';
+import { verifyCategoryManager } from '../middleware/verifyRole.js';
 
 const router = express.Router();
 
@@ -20,12 +21,12 @@ router.get('/dashboard', authenticateJWT, (req,res) => {
     })
 })
 // UPDATE || PATCH
-router.patch('/:id', updateUser)
+router.patch('/:id', authenticateJWT, updateUser)
 // ALL USERS || GET
-router.get('/all', getAllUsers)
+router.get('/all',authenticateJWT, verifyCategoryManager, getAllUsers)
 // USER BY ID || GET
-router.get('/user/:id',getUserById)
+router.get('/user/:id', authenticateJWT, verifyCategoryManager, getUserById)
 // DELETE USER || DELETE
-router.delete('/delete/:id',deleteUser)
+router.delete('/delete/:id', authenticateJWT, verifyCategoryManager, deleteUser)
 
 export default router;
