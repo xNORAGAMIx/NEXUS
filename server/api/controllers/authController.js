@@ -38,7 +38,7 @@ export const loginUser = async(req,res) => {
         // Set access token in an HTTP-only cookie
         res.cookie('accessToken', accessToken, {
             httpOnly: true,
-            secure: true,  // Set to true in production
+            secure: false,  // Set to true in production
             maxAge: 5 * 60 * 1000,  // Access token expiry in milliseconds (5 minutes)
             path: '/',
             sameSite: 'Strict'
@@ -47,7 +47,7 @@ export const loginUser = async(req,res) => {
         // Set refresh token in an HTTP-only cookie
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
-            secure: true,  // Set to true in production
+            secure: false,  // Set to true in production
             maxAge: 15 * 60 * 1000,  // Access token expiry in milliseconds (5 minutes)
             path: '/',
             sameSite: 'Strict'

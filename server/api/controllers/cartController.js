@@ -3,6 +3,7 @@ import db from '../../config/db.js';
 export const addItems = async (req, res) => {
     const { productId, quantity = 1 } = req.body;
     const userId = req.user.userId;
+    console.log(`User id: ${userId}`);
     try {
         //Check if shopping cart exists for user 
         const [cart] = await db.query('SELECT cart_id FROM SHOPPING_CART WHERE user_id =?', [userId]);
@@ -39,6 +40,7 @@ export const addItems = async (req, res) => {
 
 export const viewCart = async (req, res) => {
     const userId = req.user.userId;
+    console.log(userId);
     try {
         const [cartItems] = await db.query(`
         SELECT ci.cart_item_id, p.name, p.price, ci.quantity 
@@ -91,8 +93,17 @@ export const updateCart = async (req, res) => {
 export const deleteItem = async (req, res) => {
     const id = req.params.id;
     const userId = req.user.userId;
+
+    //add affected rows
     try {
-        await db.query('DELETE FROM CART_ITEMS WHERE cart_id = (SELECT cart_id FROM SHOPPING_CART WHERE user_id = ?) AND product_id = ?', [userId, id]);
+        const [result] = await db.query('DELETE FROM CART_ITEMS WHERE cart_id = (SELECT cart_id FROM SHOPPING_CART WHERE user_id = ?) AND product_id = ?', [userId, id]);
+
+        if(result.affectedRows === 0){
+            return res.status(404).json({
+                valid: false,
+                message: "Item not found",
+            })
+        }
 
         return res.status(200).json({
             valid: true,

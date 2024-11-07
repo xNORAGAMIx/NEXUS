@@ -2,22 +2,28 @@ import jwt from 'jsonwebtoken';
 import db from '../../config/db.js';
 
 export const authenticateJWT = async(req, res, next) => {
-    const token = req.cookies.accessToken; //Read the token from cookies
+    // if no refresh logout-----
+    let token = req.cookies.accessToken; //Read the token from cookies
+    console.log(`Initital token ${token}`);
 
     // If access token doesn't exists
-    if (!token) {
+    if (token === undefined) {
         // Create accessToken if refreshToken valid
+        console.log("Access token missing, attempting to renew...");
         const tokenRenewed = await renewToken(req,res);
-        if(tokenRenewed){
-            next();
-        } else {
-            return;
-        }
+        if(!tokenRenewed){
+            console.log(`Token renewal failed`);
+            return; 
+        } 
+        token = req.cookies.accessToken; //get the new token
+        console.log("Renewed accessToken:", token);
     }
 
     try {
+        console.log(`Tok try ${token}`);
         const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
         req.user = { userId: decoded.userId }; // attach user information to request
+        console.log(`${decoded.userId} please`);
         next(); //move to next middleware or route handler
     } catch (err) {
         console.log(err);
@@ -62,19 +68,22 @@ const renewToken = async (req, res) => {
             return false;
         }
 
+        //removal from db if session expires
+
         //Generate new access token
         const newAccessToken = jwt.sign({ id: userId }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: process.env.TOKEN_EXPIRATION });
 
         //Set access token in cookie
         res.cookie('accessToken', newAccessToken, {
             httpOnly: true,
-            secure: true,  // Set to true in production
+            secure: false,  // Set to true in production
             maxAge: 5 * 60 * 1000,  // Access token expiry in milliseconds (5 minutes)
             path: '/',
             sameSite: 'Strict'
         });
 
-        res.json({ renew: refreshToken });
+        //res.json({ renew: refreshToken });
+        console.log("New access token generated and set in cookie:", newAccessToken); // Log the new token
         return true;
     } catch (err) {
         console.log(err);
