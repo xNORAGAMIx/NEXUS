@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from "react-router-dom";
+import axios from "axios";
 import {
   FaHeart,
   FaShoppingCart,
@@ -11,17 +13,75 @@ import {
   FaExchangeAlt,
   FaQuestionCircle,
 } from "react-icons/fa";
-//image
-// import logo from "../assets/logo.png";
+//Logo
+import imgLog from "../../public/imgLog1.png"
+
+//state management methods
+import { setCategories, setLoading, setError } from '../redux/products/categoriesSlice';
+import { setProducts, setProductsLoading, setProductsError } from '../redux/products/productsSlice';
+//import { setCategoryFilter } from '../redux/products/searchSlice';
 
 const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dispatch = useDispatch();
   
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
+  //Categories state 
+  const categories = useSelector((state) => state.categories.items);
+  const loading = useSelector((state) => state.categories.loading);
+  const error = useSelector((state) => state.categories.error);
 
+  let hideTimeout;
+  // Open the dropdown
+  const handleMouseEnter = () => {
+    clearTimeout(hideTimeout);
+    setIsDropdownOpen(true);
+  };
+  // Close the dropdown with a delay
+  const handleMouseLeave = () => {
+    hideTimeout = setTimeout(() => {
+      setIsDropdownOpen(false);
+    }, 50); // Adjust the delay as needed
+  };
+  // Fetching categories
+  const getAllCategories = async () => {
+    dispatch(setLoading(true));
+    try {
+      const response = await axios.get('http://localhost:3000/api/v1/category/all');
+      if (response.data.valid) {
+        dispatch(setCategories(response.data.category));
+      } else {
+        console.log(response.data.category);
+        throw new Error('Failed to fetch categories');
+      }
+    } catch (err) {
+      dispatch(setError(err.message));
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }
+  // Fetching products
+  const getAllProducts = async () => {
+    dispatch(setProductsLoading(true));
+    try {
+      const response = await axios.get('http://localhost:3000/api/v1/products/all');
+      if (response.data.valid) {
+        dispatch(setProducts(response.data.products));
+        console.log(response.data.products);
+      } else {
+        throw new Error('Failed to fetch products');
+      }
+    } catch (err) {
+      dispatch(setProductsError(err.message));
+    } finally {
+      dispatch(setProductsLoading(false));
+    }
+  }
+
+  useEffect(() => {
+    getAllCategories();
+    getAllProducts();
+  }, [])
 
   return (
     <header className="bg-gray-900 text-white">
@@ -29,7 +89,8 @@ const Header = () => {
         {/* Logo */}
         <div className="text-3xl font-bold">
           <Link to="/" className="text-white">
-            Nexus Drop
+            {/* <img src={imgLog} alt="Logo" className="w-24"/> */}
+            NEXUS DROP
           </Link>
         </div>
 
@@ -38,9 +99,9 @@ const Header = () => {
           <input
             type="text"
             placeholder="Search for anything..."
-            className="w-full px-10 py-2 rounded-md text-gray-700 focus:outline-none"
+            className="w-full px-10 py-2 rounded-lg text-gray-700 focus:outline-none"
           />
-          <FaSearch className="absolute left-3 top-3 text-gray-500" />
+          <FaSearch className="absolute left-3 top-3 text-gray-800" />
         </div>
 
         {/* Contact and Icons */}
@@ -78,51 +139,40 @@ const Header = () => {
       </div>
 
       {/* Bottom Bar */}
-      <div className="bg-white shadow-md py-2 px-8">
+      <div className="bg-white shadow-lg py-2 px-8">
         <div className="container mx-auto flex flex-wrap items-center justify-between space-y-4 md:space-y-0 px-4">
           {/* All Category with Dropdown */}
-          <div className="relative">
+          
+          <div 
+            className="relative"
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}>
             <button
-              className="bg-gray-400 text-white px-4 py-2 rounded-lg font-bold flex items-center"
-              onClick={toggleDropdown}
+              className="bg-gray-700 text-white px-4 py-2 rounded-md font-bold flex items-center"
             >
-              All Category
-              <FaChevronDown className="ml-2" />
+              Category
+              <FaChevronDown className={`ml-2 transition-transform duration-300 ease-in-out ${isDropdownOpen ? 'rotate-180' : 'rotate-0'
+                }`} />
             </button>
             {/* Dropdown Menu */}
             {isDropdownOpen && (
-              <div className="absolute left-0 mt-2 w-56 bg-white shadow-lg rounded-md overflow-hidden z-10">
-                <ul className="py-2">
-                  <li className="px-4 py-2 text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
-                    Computer & Laptop
-                  </li>
-                  <li className="px-4 py-2 text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
-                    Computer Accessories
-                  </li>
-                  <li className="px-4 py-2 text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
-                    Smartphone
-                  </li>
-                  <li className="px-4 py-2 text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
-                    Headphone
-                  </li>
-                  <li className="px-4 py-2 text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
-                    Mobile Accessories
-                  </li>
-                  <li className="px-4 py-2 text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
-                    Gaming Console
-                  </li>
-                  <li className="px-4 py-2 text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
-                    Camera & Photo
-                  </li>
-                  <li className="px-4 py-2 text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
-                    TV & Homes Application
-                  </li>
-                  <li className="px-4 py-2 text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
-                    GPS & Navigation
-                  </li>
-                  <li className="px-4 py-2 text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
-                    Wearable Technology
-                  </li>
+              <div className="absolute left-0 mt-2 w-56 bg-white shadow-lg rounded-md overflow-hidden z-10 ">
+                <ul className="p-2">
+                  {loading ? (
+                    <li className="px-4 py-2 text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer">Loading...</li>
+                  ) : error ? (
+                    <li className="px-4 py-2 text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer">Error...</li>
+                  ) : (
+                    categories && categories.length > 0 ? (
+                      categories.map((category) => (
+                        <li key={category.category_id} className="px-4 py-2 text-gray-700 hover:bg-gray-700 hover:text-white cursor-pointer rounded-lg">
+                          {category.name}
+                        </li>
+                      ))
+                    ) : (
+                      <li className="px-4 py-2 text-gray-500">No categories available</li>
+                    )
+                  )}
                 </ul>
               </div>
             )}
@@ -163,7 +213,7 @@ const Header = () => {
       </div>
 
       {/* Breadcrumb Section */}
-      <div className="bg-gray-100 py-3 px-12">
+      {/* <div className="bg-gray-100 py-3 px-12">
         <div className="container mx-auto">
           <nav className="text-md text-gray-600">
             <Link to="/" className="hover:text-blue-600">
@@ -180,14 +230,14 @@ const Header = () => {
               About Us
             </Link>
             /
-            
+
             <Link to="/product" className="hover:text-blue-600">
               {" "}
               Product
             </Link>
           </nav>
         </div>
-      </div>
+      </div> */}
     </header>
   );
 };

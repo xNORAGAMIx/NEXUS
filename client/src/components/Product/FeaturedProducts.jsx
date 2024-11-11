@@ -1,89 +1,13 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
-import xbox from "../../assets/xbox.png";
+import { useSelector } from 'react-redux';
+import { useNavigate } from "react-router-dom";
 
 //icons
 import { CiHeart, CiShoppingCart } from "react-icons/ci";
 import { IoEyeOutline } from "react-icons/io5";
 
 // Product data
-const products = [
-  {
-    id: 1,
-    name: "TOZO T6 True Wireless Earbuds Bluetooth Headphon...",
-    category: "Headphone",
-    rating: 4.5,
-    reviews: 738,
-    price: 70,
-    image: xbox,
-    tag: "HOT",
-  },
-  {
-    id: 2,
-    name: "Samsung Electronics Samsung Galaxy S21 5G",
-    category: "Smart Phone",
-    rating: 5,
-    reviews: 536,
-    price: 2300,
-    image: xbox,
-  },
-  {
-    id: 3,
-    name: "Amazon Basics High-Speed HDMI Cable (18 Gbps, 4K/6...",
-    category: "TV",
-    rating: 4.5,
-    reviews: 423,
-    price: 360,
-    image: xbox,
-    tag: "BEST DEALS",
-  },
-  {
-    id: 4,
-    name: "Portable Washing Machine, 11lbs capacity Model 18NMF...",
-    category: "TV",
-    rating: 3.5,
-    reviews: 816,
-    price: 80,
-    image: xbox,
-  },
-  {
-    id: 5,
-    name: "Apple MacBook Pro 16-inch",
-    category: "Laptop",
-    rating: 4.8,
-    reviews: 1023,
-    price: 3200,
-    image: xbox,
-  },
-  {
-    id: 6,
-    name: "Sony WH-1000XM4 Noise Canceling Headphones",
-    category: "Headphone",
-    rating: 4.7,
-    reviews: 650,
-    price: 300,
-    image: xbox,
-  },
-  {
-    id: 7,
-    name: "HP Pavilion Gaming Laptop",
-    category: "Laptop",
-    rating: 4.5,
-    reviews: 980,
-    price: 1800,
-    image: xbox,
-  },
-  {
-    id: 8,
-    name: "Dell Inspiron 15 3000",
-    category: "Laptop",
-    rating: 4.3,
-    reviews: 720,
-    price: 1200,
-    image: xbox,
-  },
-  // Add more products as needed...
-];
 
 // DiscountBanner component
 const DiscountBanner = () => {
@@ -206,72 +130,81 @@ const DiscountBanner = () => {
 };
 
 // ProductCard component
-const ProductCard = ({ product }) => (
-  <div
-    key={product.id}
-    className="bg-white p-4 shadow-lg hover:shadow-2xl border-2 rounded-xl relative"
-  >
-    {product.soldOut && (
-      <span className="absolute top-2 left-2 bg-gray-500 text-xs font-semibold px-2 py-1 rounded-full">
-        SOLD OUT
-      </span>
-    )}
-    <div className="relative group">
-      <img
-        src={product.image}
-        alt={product.name}
-        className="w-full h-48 object-contain group-hover:blur-md border-b-2 border-gray-600"
-      />
-      <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 bg-opacity-50 rounded-lg">
-        <div className="flex space-x-4">
-          <span className="text-white font-extrabold cursor-pointer bg-orange-400 p-2 rounded-full text-4xl">
-            <CiHeart />
-          </span>
-          <span className="text-white font-extrabold cursor-pointer bg-orange-400 p-2 rounded-full text-4xl">
-            <CiShoppingCart />
-          </span>
-          <span className="text-white font-extrabold cursor-pointer bg-orange-400 p-2 rounded-full text-4xl">
-            <IoEyeOutline />
-          </span>
+const ProductCard = ({ product }) => {
+  const navigate = useNavigate();
+
+  //Navigate to specific product page
+  const handleViewProduct = () => {
+    navigate(`/product/${product.product_id}`);
+  };
+
+  return (
+    <div
+      key={product.product_id}
+      className="bg-white p-4 shadow-lg hover:shadow-2xl border-2 rounded-xl relative"
+    >
+      {/* product image */}
+      <div className="relative group">
+        <img
+          src={`http://localhost:3000${product.images[0]}`}
+          alt={product.name}
+          className="w-full h-48 object-contain group-hover:blur-md border-b-2 border-gray-600"
+        />
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 bg-opacity-50 rounded-lg">
+          <div className="flex space-x-4">
+            <span className="text-white font-extrabold cursor-pointer bg-orange-400 p-2 rounded-full text-4xl">
+              <CiHeart />
+            </span>
+            <span className="text-white font-extrabold cursor-pointer bg-orange-400 p-2 rounded-full text-4xl">
+              <CiShoppingCart />
+            </span>
+            <span
+              onClick={handleViewProduct} 
+              className="text-white font-extrabold cursor-pointer bg-orange-400 p-2 rounded-full text-4xl">
+              <IoEyeOutline />
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Product Information */}
+      <div className="mt-4">
+        <h3 className="text-sm font-bold">{product.name}</h3>
+        <div className="mt-2 text-xl font-bold text-blue-500">
+          ${product.price}
         </div>
       </div>
     </div>
-    <div className="mt-4">
-      <h3 className="text-sm font-bold">{product.name}</h3>
-      <div className="mt-2 text-xl font-bold text-blue-500">
-        ${product.price}
-      </div>
-      {product.originalPrice && (
-        <div className="text-gray-500 line-through text-sm">
-          ${product.originalPrice}
-        </div>
-      )}
-    </div>
-  </div>
-);
+  );
+}
+
 
 const getRandomProducts = (arr, count) => {
+  console.log("in here");
   const shuffled = [...arr].sort(() => 0.5 - Math.random());
+  console.log(`Shuffled ${shuffled}`);
   return shuffled.slice(0, count);
 };
 
 export default function FeaturedProducts() {
   const [activeCategory, setActiveCategory] = useState("All Product");
 
-  const categories = [
-    "All Product",
-    "Smart Phone",
-    "Laptop",
-    "Headphone",
-    "TV",
-  ];
+  const ct = useSelector((state) => state.categories.items);
+  const product = useSelector((state) => state.products.items);
+
+  //console.log(`Products ${product[0].category_name}`);
+  //console.log(product);
+  console.log(`Active category ${activeCategory}`);
 
   const filteredProducts =
     activeCategory === "All Product"
-      ? getRandomProducts(products, 6) // Show 6 random products
-      : products
-          .filter((product) => product.category === activeCategory)
-          .slice(0, 6);
+      ? getRandomProducts(product, 6) // Show 6 random products
+      : product
+        .filter((item) => item.category_name === activeCategory)
+        .slice(0, 6);
+
+  console.log(`Active category ${activeCategory}`);
+  console.log(`Filtered Product ${filteredProducts}`);
 
   return (
     <div className="container mx-auto px-20 py-8">
@@ -283,17 +216,25 @@ export default function FeaturedProducts() {
           <h2 className="text-2xl font-bold mb-6">Featured Products</h2>
           <div className="flex items-center justify-between mb-6">
             <div className="flex space-x-4">
-              {categories.map((category) => (
+              <button
+                onClick={() => setActiveCategory("All Product")}
+                className={`${activeCategory === "All Product"
+                    ? "text-blue-600 font-semibold"
+                    : "text-gray-600"
+                  }`}>
+                All Product
+              </button>
+              {ct.map((category) => (
+                category.parent_category_id !== null &&
                 <button
-                  key={category}
-                  onClick={() => setActiveCategory(category)}
-                  className={`${
-                    activeCategory === category
+                  key={category.category_id}
+                  onClick={() => setActiveCategory(category.name)}
+                  className={`${activeCategory === category.name
                       ? "text-blue-600 font-semibold"
                       : "text-gray-600"
-                  }`}
+                    }`}
                 >
-                  {category}
+                  {category.name}
                 </button>
               ))}
             </div>
@@ -304,7 +245,7 @@ export default function FeaturedProducts() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredProducts.length > 0 ? (
               filteredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
+                <ProductCard key={product.product_id} product={product} />
               ))
             ) : (
               <p>No products available in this category</p>

@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Description = () => {
   const [activeSection, setActiveSection] = useState('Description');
@@ -6,6 +8,18 @@ const Description = () => {
   const handleClick = (section) => {
     setActiveSection(section);
   };
+
+  const { id } = useParams();
+
+  const product = useSelector((state) => state.products.items);
+
+  let prodById = null;
+  for (let x = 0; x < product.length; x++) {
+    if (product[x].product_id == id) {
+      prodById = product[x];
+      break;
+    }
+  }
 
   return (
     <section className="mt-5 bg-gray-300 py-10 px-6 md:px-12">
@@ -44,8 +58,7 @@ const Description = () => {
             <div>
               <h3 className="text-2xl font-bold mb-4">Description</h3>
               <p className="text-gray-700">
-                The most powerful MacBook Pro ever is here. With the blazing-fast M1 Pro or M1 Max chip — the first Apple silicon designed for pros — you get groundbreaking performance and amazing battery life. Add to that a stunning Liquid Retina XDR display, the best camera and audio ever in a Mac notebook, and all the ports you need. The first notebook of its kind, this MacBook Pro is a beast. M1 Pro takes the exceptional performance of the M1 architecture to a whole new level for pro users.
-                Even the most ambitious projects are easily handled with up to 10 CPU cores, up to 16 GPU cores, a 16‑core Neural Engine, and dedicated encode and decode media engines that support H.264, HEVC, and ProRes codecs.
+                {prodById.description}
               </p>
             </div>
           )}

@@ -20,6 +20,10 @@ import Product from './components/Product';
 import Aboutus from "./components/Aboutus";
 import UserProfile from "./components/UserProfile";
 
+//test
+//import ProductList from "./Pages/ProductList";
+//import CategoryList from "./Pages/CategoryList";
+
 const App = () => {
   return (
     <>
@@ -27,9 +31,10 @@ const App = () => {
         {/**Header */}
         <Header />
         <Routes>
+          {/* <Route path="/test" element={<ProductList/>}/> */}
           <Route path="/" element={<Home />} />
           <Route path="/dashboard" element={<UserProfile user="Mr Meow" email="meow_meow@gmail.com" />} />
-          <Route path="/product" element={<ProductPage />} />
+          <Route path="/product/:id" element={<ProductPage />} />
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/auth" element={<AuthForm />} />
           <Route path="/cart" element={<Cart />} />

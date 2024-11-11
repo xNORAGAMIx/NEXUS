@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import cors from 'cors';
 
 //routes
 import userRoutes from './routes/userRoutes.js';
@@ -14,12 +15,18 @@ import shippingRoutes from './routes/shippingRoutes.js';
 
 //Resolve dirname
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = path.dirname(path.dirname(__filename));
+console.log(__dirname, __filename);
 
 dotenv.config();
 
 const app = express();
 
+
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true, 
+}));
 app.use(cookieParser());
 app.use(express.json());
 

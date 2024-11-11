@@ -35,7 +35,7 @@ const HeroSection = () => {
   ];
 
   return (
-    <div className="rounded-lg hover:shadow-lg hover:shadow-gray-300 sm:mx-auto lg:mx-20 mt-5 bg-gray-300 p-8 md:p-24">
+    <div className="rounded-lg shadow-lg hover:shadow-gray-300 sm:mx-auto lg:mx-20 mt-5 bg-gray-300 p-8 md:p-24">
       <Swiper
         modules={[Pagination, Navigation, Autoplay]} // Add Autoplay module here
         pagination={{ clickable: true }}

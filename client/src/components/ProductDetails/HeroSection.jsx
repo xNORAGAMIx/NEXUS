@@ -1,6 +1,20 @@
 import { useState } from "react";
+import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const HeroSection = () => {
+  const { id } = useParams();
+
+  const product = useSelector((state) => state.products.items);
+
+  let prodById = null;
+  for( let x=0;x<product.length;x++) {
+    if(product[x].product_id == id){
+      prodById = product[x];
+      break;
+    }
+  }
+
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState("space-gray");
   const [isWishlistAdded, setIsWishlistAdded] = useState(false);
@@ -16,14 +30,14 @@ const HeroSection = () => {
   return (
     <div className="p-6 bg-white border-gray-100 rounded-2xl shadow-xl border-4">
       <h2 className="text-3xl font-bold mb-4">
-        2020 Apple MacBook Pro with Apple M1 Chip (13-inch, 8GB RAM, 256GB SSD Storage) - {selectedColor === "space-gray" ? "Space Gray" : "Silver"}
+        {prodById.name} - {selectedColor === "space-gray" ? "Space Gray" : "Silver"}
       </h2>
       <p className="text-gray-600 text-sm mb-2">SKU: A264671</p>
-      <p className="text-gray-600 text-sm mb-2">Availability: In Stock</p>
+      <p className="text-gray-600 text-sm mb-2">Availability: {prodById.min_stock < 10 ? "true" : "false"}</p>
       <p className="text-gray-600 text-sm mb-4">Brand: Apple | Category: Electronics Devices</p>
 
       <div className="flex items-center mb-4 space-x-4">
-        <span className="text-2xl font-bold text-green-600">$1699</span>
+        <span className="text-2xl font-bold text-green-600">${prodById.price}</span>
         <span className="line-through text-gray-400">$1999</span>
         <span className="bg-yellow-500 text-white px-2 py-1 rounded text-xs">
           21% OFF
@@ -113,6 +127,7 @@ const HeroSection = () => {
         </button>
       </div>
 
+      {/* Reviews */}
       <div className="flex items-center mb-4">
         <div className="flex space-x-2">
           <div className="flex items-center space-x-1">

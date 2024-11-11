@@ -35,7 +35,11 @@ export const addProduct = async(req,res) => {
 
 export const getAllProducts = async(req,res) => {
     try {
-        const [rows] = await db.query('SELECT * FROM PRODUCTS');
+        const [rows] = await db.query(`
+        SELECT p.product_id, p.name AS name, p.description AS description, 
+        p.price, p.max_stock, p.min_stock, c.name AS category_name
+        FROM PRODUCTS p
+        JOIN CATEGORIES c ON p.category_id = c.category_id`);
 
         if (rows.length === 0) {
             return res.status(404).json({

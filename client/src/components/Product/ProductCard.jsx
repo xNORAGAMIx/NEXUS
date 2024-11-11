@@ -75,16 +75,16 @@ const ProductCard = () => {
 
   //fetch
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/api/products");
-        setProducts(response.data); // Set fetched products to state
-      } catch (error) {
-        console.error("Error fetching the products:", error);
-      }
-    };
+    // const fetchProducts = async () => {
+    //   try {
+    //     const response = await axios.get("http://localhost:5000/api/products");
+    //     setProducts(response.data); // Set fetched products to state
+    //   } catch (error) {
+    //     console.error("Error fetching the products:", error);
+    //   }
+    // };
 
-    fetchProducts();
+    // fetchProducts();
   }, []);
 
   const smallerProducts = products.slice(1,7);
@@ -143,16 +143,16 @@ const FeaturedCard = () => {
 
   // Fetch products from backend
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/api/products");
-        setProducts(response.data);
-      } catch (error) {
-        console.error("Error fetching the products:", error);
-      }
-    };
+    // const fetchProducts = async () => {
+    //   try {
+    //     const response = await axios.get("http://localhost:5000/api/products");
+    //     setProducts(response.data);
+    //   } catch (error) {
+    //     console.error("Error fetching the products:", error);
+    //   }
+    // };
 
-    fetchProducts();
+    // fetchProducts();
   }, []);
 
   const featuredProduct = products[0];

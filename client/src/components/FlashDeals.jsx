@@ -96,7 +96,7 @@ export default function FlashDeals() {
               {category.products.map((product, productIndex) => (
                 <div
                   key={productIndex}
-                  className="flex p-4 shadow-2xl rounded-2xl items-center h-24 w-full cursor-pointer  border-4 border-slate-500"
+                  className="flex p-4 shadow-2xl rounded-md items-center h-24 w-full cursor-pointer bg-white"
                 >
                   <div className="flex-shrink-0 w-16 h-16 mr-4">
                     <img

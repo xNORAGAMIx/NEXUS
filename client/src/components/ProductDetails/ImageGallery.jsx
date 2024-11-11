@@ -1,15 +1,25 @@
 import { useState } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
-
-import img1 from "../../assets/image1.jpg";
-import img2 from "../../assets/image2.jpg";
-import img3 from "../../assets/image3.jpg";
-import img4 from "../../assets/image4.jpg";
-
-const images = [img1, img2, img3, img4];
+import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 
 export default function ImageGallery() {
+  const { id } = useParams();
   const [selectedImage, setSelectedImage] = useState(0)
+
+  const product = useSelector((state) => state.products.items);
+
+  let prodById = null;
+  for( let x=0;x<product.length;x++) {
+    if(product[x].product_id == id){
+      prodById = product[x];
+      break;
+    }
+  }
+  
+  //hold images
+  const images = prodById.images || [];
+
 
   const handlePrev = () => {
     setSelectedImage((prev) => (prev === 0 ? images.length - 1 : prev - 1))
@@ -24,7 +34,7 @@ export default function ImageGallery() {
       {/* Main Image */}
       <div className="relative aspect-video mb-4">
         <img
-          src={images[selectedImage]}
+          src={`http://localhost:3000${images[selectedImage]}`}
           alt={`Product ${selectedImage + 1}`}
           className="w-full h-full object-cover rounded-lg"
         />
@@ -50,13 +60,12 @@ export default function ImageGallery() {
         {images.map((img, index) => (
           <button
             key={index}
-            className={`flex-shrink-0 border-2 rounded-md overflow-hidden focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-              selectedImage === index ? "border-blue-500" : "border-gray-200"
-            }`}
+            className={`flex-shrink-0 border-2 rounded-md overflow-hidden focus:outline-none focus:ring-2 focus:ring-blue-500 ${selectedImage === index ? "border-blue-500" : "border-gray-200"
+              }`}
             onClick={() => setSelectedImage(index)}
           >
             <img
-              src={img}
+              src={`http://localhost:3000${img}`}
               alt={`Gallery thumbnail ${index + 1}`}
               className="w-20 h-20 object-cover transition-transform duration-300 hover:scale-105"
             />
