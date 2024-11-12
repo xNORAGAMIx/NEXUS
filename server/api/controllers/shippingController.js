@@ -86,3 +86,46 @@ export const deleteAddress = async(req,res) => {
         })
     }
 }
+
+
+export const updateAddress = async (req,res)=>{
+    try{
+        const address_id = req.params.id;
+        const { user_id , address_line_1, address_line_2, city, state , pincode , country , phone_number, address_type}= req.body;
+         
+
+        if (!address_id) {
+           return res.status(400).json({
+               success:false,
+               message: "Address ID is required."
+            });
+       }
+         if (!user_id || !address_line_1 || !address_line_2|| ! city|| !state || !pincode || !country || !phone_number | !address_type) {
+           return res.status(400).json({
+               success:false,
+               message: "All required fields must be provided."
+            });
+       }
+           const [result]=await db.query(`UPDATE SHIPPING_ADDRESSES
+           SET user_id=? , address_line_1=?, address_line_2=?, city=?,state=? , pincode=? , country=? , phone_number=?, address_type=?, WHERE address_id = ?`,[user_id , address_line_1, address_line_2, city,state , pincode , country , phone_number, address_type, address_id]);
+
+           if (result.affectedRows === 0) {
+               return res.status(404).json({
+                 success: false,
+                 message: 'Address not found'
+               });
+             }
+         
+           res.status(200).json({
+                success:true,
+                message: "Address updated successfully.",
+                result
+                });
+           }catch(err){
+             return res.status(500).json({
+               valid: false,
+               message: "Internal server error",
+               err: err.message
+               })
+}
+}

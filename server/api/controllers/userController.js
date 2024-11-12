@@ -23,9 +23,47 @@ export const registerUser = async (req,res) => {
         });
     }
 }
-// TODO 
+// TODO   
 export const updateUser = async (req,res) => {
+    try{
+        const user_id = req.params.id;
+        const {name,email, password, phone_number, role, status}=req.body;
+         
 
+        if (!user_id) {
+           return res.status(400).json({
+               success:false,
+               message: "user ID is required."
+            });
+       }
+         if (!name || !email || !password || !phone_number|| !role || !status) {
+           return res.status(400).json({
+               success:false,
+               message: "All required fields must be provided."
+            });
+       }
+           const [result]=await db.query(`UPDATE USERS
+           SET name=?, email=?, password=?, phone_number=?, role=?, status=?, WHERE user_id = ?`,[name, email, password, phone_number, role, status, user_id]);
+
+           if (result.affectedRows === 0) {
+               return res.status(404).json({
+                 success: false,
+                 message: 'User not found'
+               });
+             }
+         
+           res.status(200).json({
+                success:true,
+                message: "User updated successfully.",
+                result
+                });
+           }catch(err){
+             return res.status(500).json({
+               valid: false,
+               message: "Internal server error",
+               err: err.message
+               })
+}
 }
 
 // working as expected

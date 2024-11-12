@@ -1,10 +1,10 @@
 import db from '../../config/db.js';
 
 export const addProduct = async(req,res) => {
-    const {name, description, category_id, price, max_stock, min_stock} = req.body;
+    const {name, description, category_id, price, max_stock, min_stock, quantity , brand , free_shipping} = req.body;
     const productImages = req.files;
     try {
-        const [product] = await db.query('INSERT INTO PRODUCTS (name, description, category_id, price, max_stock, min_stock) VALUES(?,?,?,?,?,?)', [name, description, category_id, price, max_stock, min_stock]);
+        const [product] = await db.query('INSERT INTO PRODUCTS (name, description, category_id, price, max_stock, min_stock) VALUES(?,?,?,?,?,?,?,?,?)', [name, description, category_id, price, max_stock, min_stock, quantity , brand , free_shipping]);
 
         // Insert associated images into IMAGES table
         if (productImages && productImages.length > 0) {
@@ -144,5 +144,43 @@ export const deleteProduct = async (req,res) => {
 }
 
 export const updateProduct = async (req,res) => {
+        try{
+         const product_id = req.params.id;
+         const {name, description, category_id, price, max_stock, min_stock, quantity, brand, free_shipping}=req.body;
+          
 
+         if (!product_id) {
+            return res.status(400).json({
+                success:false,
+                message: "Product ID is required."
+             });
+        }
+          if (!name || !description || !category_id || !price || !max_stock || !min_stock || !quantity || !brand ||!free_shipping) {
+            return res.status(400).json({
+                success:false,
+                message: "All required fields must be provided."
+             });
+        }
+            const [result]=await db.query(`UPDATE PRODUCTS
+            SET name=?, description=?, category_id=?, price=?, max_stock=?, min_stock=?, quantity=?, brand=?, free_shipping=? WHERE product_id = ?`,[name, description, category_id, price, max_stock, min_stock, quantity, brand, free_shipping,product_id]);
+
+            if (result.affectedRows === 0) {
+                return res.status(404).json({
+                  success: false,
+                  message: 'Product not found'
+                });
+              }
+          
+            res.status(200).json({
+                 success:true,
+                 message: "Product updated successfully.",
+                 result:result[0]
+                 });
+        }catch(err){
+            return res.status(500).json({
+                valid: false,
+                message: "Product could not be deleted",
+                err: err.message
+              })
+}
 }

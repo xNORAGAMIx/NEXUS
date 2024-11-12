@@ -10,7 +10,7 @@ export const createWishlist=async (req, res)=>{
             message :"Invalid data provided. user_id and product_id are required."
         })
     }
-    //CHeck the product_id is exists in wishlist with same user id then increment the quantity 
+    //CHeck the product_id if exists in wishlist with same user id then increment the quantity 
     const [checking] = await db.query(`SELECT wishlist_id FROM wishlists WHERE user_id = ? AND product_id = ?`, [user_id, product_id]);
 
     
