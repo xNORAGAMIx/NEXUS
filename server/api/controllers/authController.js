@@ -39,7 +39,7 @@ export const loginUser = async(req,res) => {
         res.cookie('accessToken', accessToken, {
             httpOnly: true,
             secure: false,  // Set to true in production
-            maxAge: 5 * 60 * 1000,  // Access token expiry in milliseconds (5 minutes)
+            maxAge: 30 * 60 * 1000,  // Access token expiry in milliseconds (5 minutes)
             path: '/',
             sameSite: 'Strict'
         });
@@ -48,7 +48,7 @@ export const loginUser = async(req,res) => {
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
             secure: false,  // Set to true in production
-            maxAge: 15 * 60 * 1000,  // Access token expiry in milliseconds (5 minutes)
+            maxAge: 45 * 60 * 1000,  // Access token expiry in milliseconds (5 minutes)
             path: '/',
             sameSite: 'Strict'
         });

@@ -77,7 +77,7 @@ const renewToken = async (req, res) => {
         res.cookie('accessToken', newAccessToken, {
             httpOnly: true,
             secure: false,  // Set to true in production
-            maxAge: 5 * 60 * 1000,  // Access token expiry in milliseconds (5 minutes)
+            maxAge: 30 * 60 * 1000,  // Access token expiry in milliseconds (5 minutes)
             path: '/',
             sameSite: 'Strict'
         });
