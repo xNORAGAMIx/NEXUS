@@ -1,6 +1,7 @@
 import db from '../../config/db.js';
 import bcrypt from 'bcryptjs';
 
+//working , role insertion check
 export const registerUser = async (req,res) => {
     const {name, email, password, phone_number, role} = req.body;
     try {
@@ -22,11 +23,12 @@ export const registerUser = async (req,res) => {
         });
     }
 }
-
+// TODO 
 export const updateUser = async (req,res) => {
 
 }
 
+// working as expected
 export const getAllUsers = async (req,res) => {
     try {
         const [rows] = await db.query('SELECT * FROM USERS');
@@ -53,6 +55,7 @@ export const getAllUsers = async (req,res) => {
     }
 }
 
+// working as expected
 export const getUserById = async (req,res) => {
     const id = req.params.id;
     try {
@@ -80,6 +83,7 @@ export const getUserById = async (req,res) => {
     }
 }
 
+// working as expected
 export const deleteUser = async (req,res) => {
     const id = req.params.id;
     try {

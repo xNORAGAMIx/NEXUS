@@ -7,7 +7,7 @@ export const verifyCategoryManager = async (req,res, next) => {
 
         const isUser = user[0];
 
-        if(isUser.role === "Category_Manager"){
+        if(isUser.role === "Admin"){
             next();
         } else {
             return res.json({

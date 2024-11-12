@@ -16,7 +16,7 @@ import shippingRoutes from './routes/shippingRoutes.js';
 //Resolve dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(path.dirname(__filename));
-console.log(__dirname, __filename);
+// console.log(__dirname, __filename);
 
 dotenv.config();
 
