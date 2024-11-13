@@ -1,7 +1,7 @@
 import db from '../../config/db.js';
 
 export const addShipping = async(req,res) => {
-    const {address_line_1, address_line_2, city, state, zip_code, country} = req.body;
+    const {address_line_1, address_line_2, city, state, pincode, country, phone_number} = req.body;
     const userId = req.user.userId;
     try {
         //Check if user already has 4 addresses
@@ -16,9 +16,9 @@ export const addShipping = async(req,res) => {
 
         //Insert new address
         await db.query(`
-        INSERT INTO SHIPPING_ADDRESSES (user_id, address_line_1, address_line_2, city, state, zip_code, country)
-        VALUES (?, ?, ?, ?, ?, ?, ?)`,
-       [userId, address_line_1, address_line_2, city, state, zip_code, country]);
+        INSERT INTO SHIPPING_ADDRESSES (user_id, address_line_1, address_line_2, city, state, pincode, country, phone_number)
+        VALUES (?, ?, ?, ?, ?, ?, ?,?)`,
+       [userId, address_line_1, address_line_2, city, state, pincode, country, phone_number]);
 
        return res.status(201).json({
         valid: true,

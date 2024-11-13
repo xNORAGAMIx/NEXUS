@@ -1,11 +1,42 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import apple from '/src/assets/icons8-apple-logo.svg';
-import google from '/src/assets/icons8-google.svg'
+import google from '/src/assets/icons8-google.svg';
+import axios from 'axios';
+
+// redux tools
+import { useDispatch } from 'react-redux';
+import { loginStart, loginSuccess, loginFailure } from '../redux/user/userSlice';
 
 const AuthForm = () => {
   const [isSignUp, setIsSignUp] = useState(false); // State to toggle between SignIn and SignUp forms
-  const [isForgetPassword, setIsForgetPassword] = useState(false); // State to toggle Forget Password form
+  const [isForgetPassword, setIsForgetPassword] = useState(false); // State to toggle Forget Password
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  axios.defaults.withCredentials = true;
+
+  const handleLogin = async () => {
+    dispatch(loginStart());
+    console.log(email);
+    console.log(password);
+    try {
+      const response = await axios.post('http://localhost:3000/api/v1/users/login', {
+        email,password
+      });
+      console.log(response.data);
+      dispatch(loginSuccess(response.data));
+      navigate('/dashboard');
+    } catch (err) {
+      const errorMessage = err.response?.data?.message || 'Login failed. Please try again.';
+      console.log(errorMessage);
+      dispatch(loginFailure(errorMessage));
+    }
+  }
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -173,7 +204,11 @@ const AuthForm = () => {
             <div className="mb-4">
               <label className="block text-sm font-medium mb-1">Email Address</label>
               <input
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 type="email"
+                autoComplete="email"
+                pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Email Address"
                 required
@@ -183,6 +218,8 @@ const AuthForm = () => {
             <div className="mb-4 relative">
               <label className="block text-sm font-medium mb-1">Password</label>
               <input
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 type={showPassword ? 'text' : 'password'}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Password"
@@ -209,6 +246,7 @@ const AuthForm = () => {
 
             <button
               type="submit"
+              onClick={handleLogin}
               className="w-full bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500"
             >
               LOGIN &rarr;

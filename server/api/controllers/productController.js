@@ -1,10 +1,10 @@
 import db from '../../config/db.js';
 
-export const addProduct = async(req,res) => {
-    const {name, description, category_id, price, max_stock, min_stock} = req.body;
+export const addProduct = async (req, res) => {
+    const { name, description, category_id, price, max_stock, min_stock, quantity, brand, free_shipping } = req.body;
     const productImages = req.files;
     try {
-        const [product] = await db.query('INSERT INTO PRODUCTS (name, description, category_id, price, max_stock, min_stock) VALUES(?,?,?,?,?,?)', [name, description, category_id, price, max_stock, min_stock]);
+        const [product] = await db.query('INSERT INTO PRODUCTS (name, description, category_id, price, max_stock, min_stock, quantity, brand, free_shipping) VALUES(?,?,?,?,?,?,?,?,?)', [name, description, category_id, price, max_stock, min_stock, quantity, brand, free_shipping]);
 
         // Insert associated images into IMAGES table
         if (productImages && productImages.length > 0) {
@@ -33,7 +33,7 @@ export const addProduct = async(req,res) => {
     }
 }
 
-export const getAllProducts = async(req,res) => {
+export const getAllProducts = async (req, res) => {
     try {
         const [rows] = await db.query(`
         SELECT p.product_id, p.name AS name, p.description AS description, 
@@ -77,14 +77,14 @@ export const getAllProducts = async(req,res) => {
     }
 }
 
-export const getProductById = async(req,res) => {
+export const getProductById = async (req, res) => {
     const id = req.params.id;
 
     try {
         //Product details from PRODUCTS TABLE
         const [rows] = await db.query('SELECT * FROM PRODUCTS WHERE product_id = ?', [id]);
 
-        if(rows.length === 0) {
+        if (rows.length === 0) {
             return res.status(404).json({
                 valid: false,
                 message: "Product not found"
@@ -116,18 +116,18 @@ export const getProductById = async(req,res) => {
     }
 }
 
-export const deleteProduct = async (req,res) => {
+export const deleteProduct = async (req, res) => {
     const id = req.params.id;
     try {
         const [rows] = await db.query('DELETE FROM PRODUCTS WHERE product_id = ?', [id]);
 
-        if(rows.affectedRows === 0) {
+        if (rows.affectedRows === 0) {
             return res.status(404).json({
                 valid: false,
                 message: "Product not found"
             })
         }
-        
+
         return res.status(200).json({
             valid: true,
             message: "Products deleted",
@@ -143,6 +143,6 @@ export const deleteProduct = async (req,res) => {
     }
 }
 
-export const updateProduct = async (req,res) => {
+export const updateProduct = async (req, res) => {
 
 }

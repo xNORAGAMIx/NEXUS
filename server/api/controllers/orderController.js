@@ -22,7 +22,7 @@ export const placeOrder = async (req, res) => {
 
         // Step 2: Retrieve the zipcode of the selected shipping address
         const [shippingAddress] = await db.query(`
-            SELECT zip_code FROM SHIPPING_ADDRESSES WHERE address_id = ? AND user_id = ?`,
+            SELECT pincode FROM SHIPPING_ADDRESSES WHERE address_id = ? AND user_id = ?`,
             [shippingAddressId, userId]
         );
 
@@ -33,7 +33,7 @@ export const placeOrder = async (req, res) => {
             });
         }
 
-        const userPincode = shippingAddress[0].zip_code;
+        const userPincode = shippingAddress[0].pincode;
 
         // Loop through each cart item, check inventory at the nearest warehouse
         let warehouseId = null;
@@ -47,7 +47,7 @@ export const placeOrder = async (req, res) => {
                 [item.product_id, userPincode]
             );
 
-            if (!warehouseStock || warehouseStock.length === 0 || warehouseStock[0].quantity < item.quantity) {
+            if (!warehouseStock || warehouseStock.length === 0 || warehouseStock[0].capacity < item.quantity) {
                 return res.status(400).json({
                     valid: false,
                     message: `Insufficient stock for product ID ${item.product_id} at the shipping address pincode.`
@@ -66,7 +66,7 @@ export const placeOrder = async (req, res) => {
         // Step 5: Insert order into ORDERS table
         const [orderResult] = await db.query(`
             INSERT INTO ORDERS (user_id, total_amount, order_status, shipping_address_id)
-            VALUES (?, ?, 'Unpaid', ?)`, [userId, totalAmount, shippingAddressId]
+            VALUES (?, ?, 'Processing', ?)`, [userId, totalAmount, shippingAddressId]
         );
 
         const orderId = orderResult.insertId;
@@ -74,7 +74,7 @@ export const placeOrder = async (req, res) => {
         // Insert initial status into ORDER_STATUS_HISTORY table
         await db.query(`
             INSERT INTO ORDER_STATUS_HISTORY (order_id, status)
-            VALUES (?, 'Unpaid')`, [orderId]
+            VALUES (?, 'Processing')`, [orderId]
         );
 
         // Insert items into ORDER_ITEMS and update inventory
