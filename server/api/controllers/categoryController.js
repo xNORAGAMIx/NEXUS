@@ -94,5 +94,43 @@ export const deleteCategory = async (req, res) => {
 }
 
 export const updateCategory = async (req, res) => {
+    try{
+        const category_id = req.params.id;
+        const {parent_category_id , name , description}=req.body;
+         
 
+        if (!category_id) {
+           return res.status(400).json({
+               success:false,
+               message: "Category ID is required."
+            });
+       }
+         if (!parent_category_id|| !name || !description) {
+           return res.status(400).json({
+               success:false,
+               message: "All required fields must be provided."
+            });
+       }
+           const [result]=await db.query(`UPDATE CATEGORIES
+           SET parent_category_id =?, name =?, description =?, WHERE category_id = ?`,[parent_category_id , name , description, category_id]);
+
+           if (result.affectedRows === 0) {
+               return res.status(404).json({
+                 success: false,
+                 message: 'Category not found'
+               });
+             }
+         
+           res.status(200).json({
+                success:true,
+                message: "Category updated successfully.",
+                result
+                });
+           }catch(err){
+             return res.status(500).json({
+               valid: false,
+               message: "Internal server error",
+               err: err.message
+               })
+}
 }
