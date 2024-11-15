@@ -79,7 +79,6 @@ export const readWishlist = async (req, res) => {
 
 
     //Delete ALL items in wishlist by userid
-    
   export  const deleteWishlist =async(req, res)=>{
         try{
             const userId= req.params.id;
@@ -105,8 +104,6 @@ export const readWishlist = async (req, res) => {
             })
         }
     }
-
-
 
 export const getAllWishlist =async(req,res)=>{
     try{

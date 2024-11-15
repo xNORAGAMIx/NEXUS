@@ -13,6 +13,7 @@ import cartRoutes from './routes/cartRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import shippingRoutes from './routes/shippingRoutes.js'; 
 import wishlistRoutes from './routes/wishlistRoutes.js';
+import warehouseRoutes from './routes/warehouseRoutes.js';
 //Resolve dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(path.dirname(__filename));
@@ -59,6 +60,9 @@ app.use('/api/v1/ship-address/', shippingRoutes);
 
 //wishlist routes
 app.use('/api/v1/wishlist/',wishlistRoutes)
+
+//warehouse routes
+app.use('/api/v1/warehouse/',warehouseRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

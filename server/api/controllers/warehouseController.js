@@ -1,4 +1,4 @@
-import db from '../../config/db';
+import db from '../../config/db.js';
 
 
 export const createWarehouse =async(req, res)=>{
@@ -33,7 +33,7 @@ export const createWarehouse =async(req, res)=>{
 }
 
 
-export const readWarehouse =async(req, res)=>{
+export const readWarehouse = async(req, res)=>{
     const warehouseId = req.params.id;
     try {
         const [warehouses] = await db.query('SELECT * FROM WAREHOUSES WHERE warehouse_id = ?', [warehouseId]);
@@ -63,8 +63,16 @@ export const readWarehouse =async(req, res)=>{
 export const deleteWarehouse =async(req, res)=>{
     const id = req.params.id;
     try {
+        const [rows] = await db.query('DELETE FROM INVENTORY WHERE warehouse_id = ?', [id]);
+        
+        if(rows.affectedRows === 0) {
+            return res.status(404).json({
+                valid: false,
+                message: 'Inventory not found'
+            })
+        }
+        
         const [result] = await db.query('DELETE FROM WAREHOUSES WHERE warehouse_id = ?', [id]);
-
         if(result.affectedRows === 0) {
             return res.status(404).json({
                 valid: false,
@@ -99,7 +107,8 @@ export const getAllWarehouse = async(req, res)=>{
 
         res.status(200).json({
             success : true,
-            message: "Warehouse fetched successfully"
+            message: "Warehouse fetched successfully",
+            warehouse: result
         })
     }catch(err){
         console.log(err);

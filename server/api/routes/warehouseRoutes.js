@@ -1,9 +1,8 @@
 import express from 'express';
-const router = express.Router();
-
 import  {createWarehouse, readWarehouse, deleteWarehouse ,getAllWarehouse} from "../controllers/warehouseController.js";
 import { updateWarehouse } from '../controllers/warehouseController.js';
 
+const router = express.Router();
 
 //Create Warehouse
 router.post('/', createWarehouse);
